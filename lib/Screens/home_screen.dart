@@ -1,5 +1,7 @@
+import 'package:calculator/Auth/auth_service.dart';
 import 'package:calculator/Constants/app_colors.dart';
 import 'package:calculator/Provider/CalculatorProvider.dart';
+import 'package:calculator/Screens/login_screen.dart';
 import 'package:calculator/Screens/widgets_data.dart';
 import 'package:calculator/Widgets/cal_button.dart';
 import 'package:calculator/Widgets/text_field.dart';
@@ -11,62 +13,77 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _auth = AuthService();
+
     final screenHeight = MediaQuery.sizeOf(context).height * 0.6;
     final padding = EdgeInsets.symmetric(horizontal: 25, vertical: 30);
     final decoration = BoxDecoration(
         color: AppColors.primaryColor, borderRadius: BorderRadius.circular(30));
 
     return Consumer<CalculatorProvider>(builder: (context, provider, _) {
-      return Column(
-        children: [
-          CustomTextField(
-              textEditingController: provider.textEditingController),
-          Container(
-            height: screenHeight,
-            width: double.infinity,
-            padding: padding,
-            decoration: decoration,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(4, (index) => buttonList[index])),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children:
-                        List.generate(4, (index) => buttonList[index + 4])),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children:
-                        List.generate(4, (index) => buttonList[index + 8])),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(children: [
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: List.generate(
-                                3, (index) => buttonList[index + 12])),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: List.generate(
-                                3, (index) => buttonList[index + 15]))
-                      ]),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    CalculateButton(),
-                  ],
-                )
-              ],
+      return Material(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              ElevatedButton(
+                child: Text("Logout"),
+                onPressed: () async {
+                  provider.textEditingController.clear();
+                  await _auth.signout();
+                  Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+                },
+              )
+            ]),
+            CustomTextField(
+                textEditingController: provider.textEditingController),
+            Container(
+              height: screenHeight,
+              width: double.infinity,
+              padding: padding,
+              decoration: decoration,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(4, (index) => buttonList[index])),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children:
+                          List.generate(4, (index) => buttonList[index + 4])),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children:
+                          List.generate(4, (index) => buttonList[index + 8])),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(children: [
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: List.generate(
+                                  3, (index) => buttonList[index + 12])),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: List.generate(
+                                  3, (index) => buttonList[index + 15]))
+                        ]),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      CalculateButton(),
+                    ],
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       );
     });
   }

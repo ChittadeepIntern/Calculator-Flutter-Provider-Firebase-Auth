@@ -26,6 +26,9 @@ class CalculatorProvider extends ChangeNotifier {
       case "/":
         textEditingController.text += "/";
         break;
+      case "%":
+        textEditingController.text += "%";
+        break;
       case "=":
         textEditingController.text =
             textEditingController.text.interpret().toString();

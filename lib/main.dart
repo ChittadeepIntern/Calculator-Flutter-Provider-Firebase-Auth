@@ -1,14 +1,17 @@
 import 'package:calculator/Provider/CalculatorProvider.dart';
-import 'package:calculator/Screens/home_screen.dart';
+import 'package:calculator/Screens/login_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(CalculatorApp());
 }
 
 class CalculatorApp extends StatelessWidget {
-  const CalculatorApp({super.key});
+   CalculatorApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +25,7 @@ class CalculatorApp extends StatelessWidget {
           appBar: AppBar(
             title: const Center(child: Text("Calculator App")),
           ),
-          body: HomeScreen(),
+          body: LoginScreen(),
         ),
       ),
     );

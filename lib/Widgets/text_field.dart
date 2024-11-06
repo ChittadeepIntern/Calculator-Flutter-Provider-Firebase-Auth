@@ -8,18 +8,20 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 30),
-      child: TextField(
-        controller: textEditingController,
-        decoration: const InputDecoration(
-            border: InputBorder.none,
-            fillColor: AppColors.primaryColor,
-            filled: true),
-        style: const TextStyle(fontSize: 50),
-        readOnly: true,
-        autofocus: true,
-        showCursor: true,
+    return Material(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 30),
+        child: TextField(
+          controller: textEditingController,
+          decoration: const InputDecoration(
+              border: InputBorder.none,
+              fillColor: AppColors.primaryColor,
+              filled: true),
+          style: const TextStyle(fontSize: 50),
+          readOnly: true,
+          autofocus: true,
+          showCursor: true,
+        ),
       ),
     );
   }

@@ -10,22 +10,24 @@ class CalculateButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Provider.of<CalculatorProvider>(context, listen: false).setValue('=');
-      },
-      child: Container(
-        height: 160,
-        width: 70,
-        child: Center(
-          child: Text(
-            "=",
-            style: TextStyle(fontSize: 32),
+    return Material(
+      child: InkWell(
+        onTap: () {
+          Provider.of<CalculatorProvider>(context, listen: false).setValue('=');
+        },
+        child: Container(
+          height: 160,
+          width: 70,
+          child: Center(
+            child: Text(
+              "=",
+              style: TextStyle(fontSize: 32),
+            ),
           ),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(40),
+              color: AppColors.secondaryColor),
         ),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(40),
-            color: AppColors.secondaryColor),
       ),
     );
   }
