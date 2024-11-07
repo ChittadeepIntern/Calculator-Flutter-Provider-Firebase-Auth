@@ -1,5 +1,7 @@
 import 'package:calculator/Provider/CalculatorProvider.dart';
+import 'package:calculator/Screens/home_screen.dart';
 import 'package:calculator/Screens/login_screen.dart';
+import 'package:calculator/Screens/sign_up_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,13 +23,13 @@ class CalculatorApp extends StatelessWidget {
       child: MaterialApp(
         theme: ThemeData.dark(),
         debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          appBar: AppBar(
-            title: const Center(child: Text("Calculator App")),
-          ),
-          body: LoginScreen(),
-        ),
-      ),
+        routes: {
+          '/login': (context) => LoginScreen(),
+          '/home': (context) => HomeScreen(),
+          '/signup': (context) => SignUpScreen()
+        },
+        initialRoute: '/login',
+        )
     );
   }
 }

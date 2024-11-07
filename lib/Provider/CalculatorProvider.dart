@@ -3,6 +3,8 @@ import 'package:function_tree/function_tree.dart';
 
 class CalculatorProvider extends ChangeNotifier {
   final textEditingController = TextEditingController();
+  String? password;
+
 
 //called whenever any button of the calculator is pressed
   void setValue(String value) {

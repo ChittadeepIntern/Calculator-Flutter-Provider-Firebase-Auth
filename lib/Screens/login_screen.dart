@@ -1,8 +1,10 @@
 import 'package:calculator/Auth/auth_service.dart';
+import 'package:calculator/Provider/CalculatorProvider.dart';
 import 'package:calculator/Screens/home_screen.dart';
 import 'package:calculator/Screens/sign_up_screen.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,31 +15,19 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _auth = AuthService();
+
+  final _formKey = GlobalKey<FormState>();
+
   final _mailIdController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  Future<void> _login() async {
-    if (_mailIdController.text.isEmpty || _passwordController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please enter both email and password")),
-      );
-      return;
-    }
-
-    if (!EmailValidator.validate(_mailIdController.text)) {
-      SnackBar(content: Text("Please check the email provided"));
-      return;
-    }
-    final user = await _auth.signInUserWithEmailAndPassword(
-      _mailIdController.text,
-      _passwordController.text,
-    );
+  Future<void> _login(String mailId, String password) async {
+    final user = await _auth.signInUserWithEmailAndPassword(mailId, password);
 
     if (user != null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
+      Provider.of<CalculatorProvider>(context, listen: false).password =
+          password;
+      Navigator.pushReplacementNamed(context, '/home');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Login failed. Please check your credentials")),
@@ -45,12 +35,20 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      _login(_mailIdController.text, _passwordController.text);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Center(
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Center(
+          child: Form(
+            key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -58,33 +56,38 @@ class _LoginScreenState extends State<LoginScreen> {
                   "Sign In",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
-                TextField(
-                  controller: _mailIdController,
-                  decoration: InputDecoration(labelText: "Email"),
-                ),
-                TextField(
+                TextFormField(
+                    controller: _mailIdController,
+                    decoration: InputDecoration(labelText: "Email"),
+                    validator: (value) {
+                      if (value == null || value.isEmpty)
+                        return "Please enter Email Address";
+
+                      if (!EmailValidator.validate(_mailIdController.text))
+                        return "Please check the email provided";
+                    }),
+                TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(labelText: "Password"),
                   obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty)
+                      return "Please enter Password";
+                  },
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: _login,
+                  onPressed: _submitForm,
                   child: Text("Sign In"),
                 ),
                 SizedBox(height: 10),
                 GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const SignUpScreen()),
-                    );
-                  },
-                  child: Row( mainAxisAlignment: MainAxisAlignment.center,
+                  onTap: () =>
+                      Navigator.pushReplacementNamed(context, '/signup'),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        "Don't have an account?"
-                      ),
+                      Text("Don't have an account?"),
                       Text("Sign Up", style: TextStyle(color: Colors.blue))
                     ],
                   ),
@@ -93,6 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
+      ),
     );
   }
 

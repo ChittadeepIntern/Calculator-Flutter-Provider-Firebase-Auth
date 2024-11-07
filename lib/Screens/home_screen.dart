@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:calculator/Auth/auth_service.dart';
 import 'package:calculator/Constants/app_colors.dart';
 import 'package:calculator/Provider/CalculatorProvider.dart';
@@ -21,20 +23,62 @@ class HomeScreen extends StatelessWidget {
         color: AppColors.primaryColor, borderRadius: BorderRadius.circular(30));
 
     return Consumer<CalculatorProvider>(builder: (context, provider, _) {
-      return Material(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+      return Scaffold(
+        appBar: AppBar(backgroundColor: Colors.white),
+        drawer: Drawer(
+          backgroundColor: Colors.white,
+          child: ListView(
+            children: [
+              ListTile(
+                title: Text("View Profile"),
+              ),
+              ListTile(
+                title: Text("Delete Account"),
+                onTap: () => showDialog(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                          content:
+                              Text("Do you really want to delete your account"),
+                          actions: [
+                            TextButton(
+                                onPressed: () async {
+                                  log("Pressed on logout");
+                                  await _auth.deleteUserAccount(provider.password);
+                                  provider.textEditingController.clear();
+                                  provider.password = null;
+                                  Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    '/login',
+                                    (Route<dynamic> route) =>
+                                        route.settings.name == '/login',
+                                  );
+                                },
+                                child: Text("yes")),
+                            TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text("no"))
+                          ],
+                        )),
+              ),
+              ListTile(
+                  title: Text("Logout"),
+                  onTap: ()  async {
+                        log("Pressed on logout");
+                        provider.textEditingController.clear();
+                        provider.password = null;
+                        await _auth.signout();
+                        Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            '/login',
+                            (Route<dynamic> route) =>
+                                route.settings.name == '/login');
+                      })
+            ],
+          ),
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-              ElevatedButton(
-                child: Text("Logout"),
-                onPressed: () async {
-                  provider.textEditingController.clear();
-                  await _auth.signout();
-                  Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => const LoginScreen()));
-                },
-              )
-            ]),
             CustomTextField(
                 textEditingController: provider.textEditingController),
             Container(
