@@ -1,39 +1,43 @@
 import 'dart:developer';
 
-import 'package:calculator/Auth/auth_service.dart';
 import 'package:calculator/Constants/app_colors.dart';
 import 'package:calculator/Provider/CalculatorProvider.dart';
-import 'package:calculator/Screens/login_screen.dart';
 import 'package:calculator/Screens/widgets_data.dart';
 import 'package:calculator/Widgets/cal_button.dart';
 import 'package:calculator/Widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../Provider/auth_provider.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final _auth = AuthService();
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final calculatorProvider = Provider.of<CalculatorProvider>(context, listen: false);
 
     final screenHeight = MediaQuery.sizeOf(context).height * 0.6;
     final padding = EdgeInsets.symmetric(horizontal: 25, vertical: 30);
     final decoration = BoxDecoration(
         color: AppColors.primaryColor, borderRadius: BorderRadius.circular(30));
 
-    return Consumer<CalculatorProvider>(builder: (context, provider, _) {
       return Scaffold(
-        appBar: AppBar(backgroundColor: Colors.white),
+        appBar: AppBar(backgroundColor: Colors.white, foregroundColor: Colors.black),
         drawer: Drawer(
           backgroundColor: Colors.white,
           child: ListView(
             children: [
               ListTile(
                 title: Text("View Profile"),
+                textColor: Colors.black,
+                onTap: ()=> Navigator.pushNamed(context, '/profile')
               ),
               ListTile(
                 title: Text("Delete Account"),
+                textColor: Colors.black,
                 onTap: () => showDialog(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(
@@ -43,9 +47,9 @@ class HomeScreen extends StatelessWidget {
                             TextButton(
                                 onPressed: () async {
                                   log("Pressed on logout");
-                                  await _auth.deleteUserAccount(provider.password);
-                                  provider.textEditingController.clear();
-                                  provider.password = null;
+                                  await authProvider.deleteUserAccount(calculatorProvider.password);
+                                  calculatorProvider.textEditingController.clear();
+                                  calculatorProvider.password = null;
                                   Navigator.pushNamedAndRemoveUntil(
                                     context,
                                     '/login',
@@ -62,11 +66,12 @@ class HomeScreen extends StatelessWidget {
               ),
               ListTile(
                   title: Text("Logout"),
+                  textColor: Colors.black,
                   onTap: ()  async {
                         log("Pressed on logout");
-                        provider.textEditingController.clear();
-                        provider.password = null;
-                        await _auth.signout();
+                        calculatorProvider.textEditingController.clear();
+                        calculatorProvider.password = null;
+                        await authProvider.signout();
                         Navigator.pushNamedAndRemoveUntil(
                             context,
                             '/login',
@@ -80,7 +85,7 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CustomTextField(
-                textEditingController: provider.textEditingController),
+                textEditingController: calculatorProvider.textEditingController),
             Container(
               height: screenHeight,
               width: double.infinity,
@@ -129,6 +134,5 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       );
-    });
   }
 }

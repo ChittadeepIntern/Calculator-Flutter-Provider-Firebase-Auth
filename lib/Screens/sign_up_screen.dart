@@ -1,9 +1,12 @@
-import 'package:calculator/Auth/auth_service.dart';
+import 'package:calculator/Services/auth_service.dart';
 import 'package:calculator/Screens/home_screen.dart';
 import 'package:calculator/Screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:provider/provider.dart';
+
+import '../Provider/auth_provider.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -13,7 +16,6 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final _auth = AuthService();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -21,7 +23,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _passwordController = TextEditingController();
 
   Future<void> _signup(String mailId, String password) async {
-    final user = await _auth.createUserWithEmailAndPassword(
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    final user = await authProvider.createUserWithEmailAndPassword(
       mailId,
       password,
     );

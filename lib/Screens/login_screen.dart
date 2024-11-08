@@ -1,10 +1,12 @@
-import 'package:calculator/Auth/auth_service.dart';
+import 'package:calculator/Services/auth_service.dart';
 import 'package:calculator/Provider/CalculatorProvider.dart';
 import 'package:calculator/Screens/home_screen.dart';
 import 'package:calculator/Screens/sign_up_screen.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../Provider/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,7 +16,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _auth = AuthService();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -22,10 +23,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
 
   Future<void> _login(String mailId, String password) async {
-    final user = await _auth.signInUserWithEmailAndPassword(mailId, password);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final calculatorProvider = Provider.of<CalculatorProvider>(context, listen: false);
+
+    final user = await authProvider.signInUserWithEmailAndPassword(mailId, password);
 
     if (user != null) {
-      Provider.of<CalculatorProvider>(context, listen: false).password =
+      calculatorProvider.password =
           password;
       Navigator.pushReplacementNamed(context, '/home');
     } else {
