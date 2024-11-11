@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final user = await authProvider.signInUserWithEmailAndPassword(mailId, password);
 
-    if (user != null) {
+    if (authProvider.user != null) {
       calculatorProvider.password =
           password;
       Navigator.pushReplacementNamed(context, '/home');

@@ -1,7 +1,6 @@
 import 'dart:developer';
-
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -14,77 +13,86 @@ class AuthProvider extends ChangeNotifier {
     });
   }
 
+  // Getter for user
   User? get user => _user;
 
+  // Check if user is authenticated
   bool get isAuthenticated => _user != null;
 
-  Future<User?> createUserWithEmailAndPassword(
-      String email, String password) async {
+  // Create user with email and password
+  Future<String?> createUserWithEmailAndPassword(String email, String password) async {
     try {
       final cred = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      return cred.user;
+      _user = cred.user;
+      notifyListeners();
+      return null; // Success
     } catch (e) {
       log(e.toString());
+      return 'Failed to create user: ${e.toString()}'; // Error message
     }
-    return null;
   }
 
-  Future<User?> signInUserWithEmailAndPassword(
-      String email, String password) async {
+  // Sign in user with email and password
+  Future<String?> signInUserWithEmailAndPassword(String email, String password) async {
     try {
       final cred = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      return cred.user;
+      _user = cred.user;
+      notifyListeners();
+      return null; // Success
     } catch (e) {
       log(e.toString());
+      return 'Error signing in: ${e.toString()}'; // Error message
     }
-    return null;
   }
 
-  Future<void> signOut() async {
-    await _auth.signOut();
-  }
-
+  // Sign out user
   Future<void> signout() async {
     try {
       await _auth.signOut();
+      _user = null;
+      notifyListeners();
     } catch (e) {
       log(e.toString());
     }
   }
 
+  // Re-authenticate user with password
   Future<void> _reAuthenticateUser(String? password) async {
     try {
-      // Get the currently signed-in user
-      User? user = FirebaseAuth.instance.currentUser;
+      // Use _user instead of querying FirebaseAuth instance
+      User? user = _user;
+      if (user == null) throw Exception('No user is currently signed in.');
 
-      // Set up the user's credentials again (e.g., using email and password)
       AuthCredential credential = EmailAuthProvider.credential(
-        email: user?.email ?? '',
-        password: password??'', // Replace with the actual user password
+        email: user.email ?? '',
+        password: password ?? '',
       );
-
-      // Re-authenticate the user
-      await user?.reauthenticateWithCredential(credential);
-      print('User re-authenticated successfully');
+      await user.reauthenticateWithCredential(credential);
+      log('User re-authenticated successfully');
     } catch (e) {
-      print('Failed to re-authenticate user: $e');
+      log('Failed to re-authenticate user: $e');
     }
   }
 
-
-  Future<void> deleteUserAccount(String? password) async {
-    await _reAuthenticateUser(password);//First reauthenticate the user
+  // Delete user account after re-authentication
+  Future<String?> deleteUserAccount(String? password) async {
+    await _reAuthenticateUser(password); // First re-authenticate the user
     try {
-      User? user = FirebaseAuth.instance.currentUser;
+      User? user = _user;
       if (user != null) {
         await user.delete();
+        _user = null;
+        notifyListeners();
         log('User account deleted successfully');
+        return null; // Success
+      } else {
+        return 'User not authenticated';
       }
     } catch (e) {
       log('Failed to delete user: ${e.toString()}');
+      return 'Error deleting account: ${e.toString()}'; // Error message
     }
   }
-
 }

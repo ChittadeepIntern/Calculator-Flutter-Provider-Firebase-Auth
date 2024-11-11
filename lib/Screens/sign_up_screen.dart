@@ -31,7 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       password,
     );
 
-    if (user != null) {
+    if (authProvider.user != null) {
       Navigator.pushReplacementNamed(
         context,'/home'
       );

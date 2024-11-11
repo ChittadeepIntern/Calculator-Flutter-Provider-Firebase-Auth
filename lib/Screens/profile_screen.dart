@@ -1,8 +1,11 @@
+import 'package:calculator/Provider/auth_provider.dart';
 import 'package:calculator/Services/auth_service.dart';
 import 'package:calculator/Services/database_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -12,6 +15,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
+
   File? _selectedImage; // To store the selected image
 
   String? _name;
@@ -43,6 +47,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ]; // List of country codes
   @override
   Widget build(BuildContext context) {
+
+    final authProvider = Provider.of<AuthProvider>(context, listen:false);
+
     // Ensure the method always returns a valid widget
     return Scaffold(
       appBar: AppBar(
@@ -115,7 +122,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Name TextFormField
               TextFormField(
                 decoration: InputDecoration(labelText: 'Name'),
-                initialValue: "Chittadeep",
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your name';
@@ -159,7 +165,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Expanded(
                     flex: 4,
                     child: TextFormField(
-                      initialValue: "8967149075",
                       decoration: InputDecoration(labelText: 'Phone Number'),
                       keyboardType: TextInputType.phone,
                       validator: (value) {
@@ -181,7 +186,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               // Address TextFormField (Multiline)
               TextFormField(
-                initialValue: "E2/2, Bidhan Park",
                 decoration: InputDecoration(labelText: 'Address'),
                 keyboardType: TextInputType.multiline,
                 maxLines: 3,
@@ -240,8 +244,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               SizedBox(height: 20),
               TextFormField(
-                initialValue: "mailchittadeep@gmail.com",
                 decoration: InputDecoration(labelText: 'Email ID'),
+                initialValue: authProvider.user?.email,
                 enabled: false, // Make this field read-only
                 style: TextStyle(color: Colors.white),
               ),
