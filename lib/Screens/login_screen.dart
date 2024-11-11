@@ -1,7 +1,5 @@
-import 'package:calculator/Services/auth_service.dart';
+
 import 'package:calculator/Provider/CalculatorProvider.dart';
-import 'package:calculator/Screens/home_screen.dart';
-import 'package:calculator/Screens/sign_up_screen.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -110,4 +108,5 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     super.dispose();
   }
+
 }

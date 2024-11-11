@@ -1,5 +1,4 @@
 import 'package:calculator/Provider/auth_provider.dart';
-import 'package:calculator/Services/auth_service.dart';
 import 'package:calculator/Services/database_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -243,6 +242,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
 
               SizedBox(height: 20),
+
               TextFormField(
                 decoration: InputDecoration(labelText: 'Email ID'),
                 initialValue: authProvider.user?.email,
@@ -256,19 +256,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   if (_formKey.currentState!.validate() && _gender != null) {
                     _formKey.currentState!.save();
 
-
-
-                    print("Name: $_name");
-                    print("Country Code: $_countryCode");
-                    print("Phone: $_phone");
-                    print("Address: $_address");
-                    print("Gender: $_gender");
-
-                    DatabaseService.saveToDatabase(_name, _countryCode, _phone, _address, _gender, "mailchittadeep@gmail.com");
+                    DatabaseService.saveToDatabase(_name, _countryCode, _phone, _address, _gender, authProvider.user?.email);
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Form Submitted Successfully!")),
                     );
+
+                    Navigator.popUntil(context, ModalRoute.withName('/home'));
 
                   } else {
                     setState(() {});

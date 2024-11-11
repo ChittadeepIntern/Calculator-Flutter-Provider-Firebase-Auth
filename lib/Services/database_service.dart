@@ -5,12 +5,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class DatabaseService {
   static void saveToDatabase(String? name, String? countryCode, String? phone,
       String? address, String? gender, String? email) async {
+
+    log(email.toString());
+
     QuerySnapshot userQuery = await FirebaseFirestore.instance
         .collection('users')
         .where('email', isEqualTo: email) // Use email as unique identifier
         .get();
 
-    if (userQuery.docs.isNotEmpty){
+    if (userQuery.docs.isNotEmpty) {
       // If the user exists, update the existing document
       String userId = userQuery.docs.first.id;
       await FirebaseFirestore.instance.collection('users').doc(userId).update({
@@ -43,4 +46,45 @@ class DatabaseService {
       });
     }
   }
+
+  static void deleteFromDatabase(String? email) async {
+
+
+    log(email.toString());
+
+    QuerySnapshot userQuery = await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: email) // Use email as unique identifier
+        .get();
+
+    if (userQuery.docs.isNotEmpty) {
+      // If the user exists, delete the existing document
+      String userId = userQuery.docs.first.id;
+      await FirebaseFirestore.instance.collection('users').doc(userId).delete();
+      log("User account data of $email deleted successfully");
+    }
+  }
+
+  static void getDataByEmail(String? email) async {
+    // Reference to Firestore collection
+    CollectionReference collectionRef = FirebaseFirestore.instance.collection('users');
+
+    try {
+      // Query Firestore where the uniqueField matches the uniqueFieldValue
+      QuerySnapshot querySnapshot = await collectionRef
+          .where('email', isEqualTo: email)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // If the document is found, access the document data
+        var documentData = querySnapshot.docs.first.data();
+        print("Document found: $documentData");
+      } else {
+        print("No document found with the unique field value: $email");
+      }
+    } catch (e) {
+      print("Error retrieving document: $e");
+    }
+  }
+
 }

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:calculator/Provider/CalculatorProvider.dart';
+import 'package:calculator/Services/database_service.dart';
 import 'package:flutter/material.dart';
 
 import '../Provider/auth_provider.dart';
@@ -39,7 +40,8 @@ class DrawerHomeScreen extends StatelessWidget {
                       actions: [
                         TextButton(
                             onPressed: () async {
-                              log("Pressed on logout");
+                              log(authProvider.user?.email??"no mail receieved");
+                              DatabaseService.deleteFromDatabase(authProvider.user?.email);
                               await authProvider.deleteUserAccount(calculatorProvider.password);
                               calculatorProvider.textEditingController.clear();
                               calculatorProvider.password = null;
@@ -49,6 +51,7 @@ class DrawerHomeScreen extends StatelessWidget {
                                 (Route<dynamic> route) =>
                                     route.settings.name == '/login',
                               );
+
                             },
                             child: Text("yes")),
                         TextButton(

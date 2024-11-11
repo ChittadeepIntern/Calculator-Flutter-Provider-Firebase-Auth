@@ -7,10 +7,7 @@ class AuthProvider extends ChangeNotifier {
   User? _user;
 
   AuthProvider() {
-    _auth.authStateChanges().listen((User? user) {
-      _user = user;
-      notifyListeners();
-    });
+    _checkUserLoggedIn();
   }
 
   // Getter for user
@@ -95,4 +92,12 @@ class AuthProvider extends ChangeNotifier {
       return 'Error deleting account: ${e.toString()}'; // Error message
     }
   }
+
+  // Check if the user is logged in
+  Future<void> _checkUserLoggedIn() async {
+    _user = _auth.currentUser; // Get the current user from FirebaseAuth instance
+    notifyListeners();  // Notify listeners to update the UI
+  }
+
+
 }
