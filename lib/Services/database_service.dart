@@ -65,7 +65,7 @@ class DatabaseService {
     }
   }
 
-  static void getDataByEmail(String? email) async {
+  static Future<Map<String, dynamic>?> getDataByEmail(String? email) async {
     // Reference to Firestore collection
     CollectionReference collectionRef = FirebaseFirestore.instance.collection('users');
 
@@ -77,14 +77,18 @@ class DatabaseService {
 
       if (querySnapshot.docs.isNotEmpty) {
         // If the document is found, access the document data
-        var documentData = querySnapshot.docs.first.data();
+        var documentData = querySnapshot.docs.first.data() as Map<String, dynamic>;
+        //log(documentData as String);
+        return documentData;
         print("Document found: $documentData");
       } else {
         print("No document found with the unique field value: $email");
+        return null;
       }
     } catch (e) {
       print("Error retrieving document: $e");
     }
+    return null;
   }
 
 }

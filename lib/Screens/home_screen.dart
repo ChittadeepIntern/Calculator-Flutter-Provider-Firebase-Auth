@@ -1,16 +1,15 @@
 import 'dart:developer';
 
 import 'package:calculator/Constants/app_colors.dart';
-import 'package:calculator/Provider/CalculatorProvider.dart';
+import 'package:calculator/Provider/calculator_provider.dart';
+import 'package:calculator/Provider/auth_provider.dart';
 import 'package:calculator/Screens/widgets_data.dart';
 import 'package:calculator/Widgets/cal_button.dart';
 import 'package:calculator/Widgets/drawer_home_screen.dart';
 import 'package:calculator/Widgets/text_field.dart';
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
 
-import '../Provider/auth_provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

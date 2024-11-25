@@ -1,4 +1,5 @@
-import 'package:calculator/Provider/CalculatorProvider.dart';
+import 'package:calculator/Provider/calculator_provider.dart';
+import 'package:calculator/Provider/profile_provider.dart';
 
 import 'package:calculator/Screens/home_screen.dart';
 
@@ -40,7 +41,8 @@ class _CalculatorAppState extends State<CalculatorApp> {
 
         providers: [
           ChangeNotifierProvider(create: (_) => CalculatorProvider()),
-          ChangeNotifierProvider(create: (_) => AuthProvider())
+          ChangeNotifierProvider(create: (_) => AuthProvider()),
+          ChangeNotifierProvider(create: (_) => ProfileProvider())
         ], //passing the actual provider
 
         child: MaterialApp(

@@ -1,6 +1,8 @@
 import 'dart:developer';
 
-import 'package:calculator/Provider/CalculatorProvider.dart';
+import 'package:calculator/Provider/calculator_provider.dart';
+import 'package:calculator/Provider/profile_provider.dart';
+import 'package:calculator/Screens/profile_screen.dart';
 import 'package:calculator/Services/database_service.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +22,9 @@ class DrawerHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final profileProvider = ProfileProvider();
+
     return Drawer(
       backgroundColor: Colors.white,
       child: ListView(
@@ -67,6 +72,8 @@ class DrawerHomeScreen extends StatelessWidget {
                     log("Pressed on logout");
                     calculatorProvider.textEditingController.clear();
                     calculatorProvider.password = null;
+                    profileProvider.dispose();
+
                     await authProvider.signout();
                     Navigator.pushNamedAndRemoveUntil(
                         context,
